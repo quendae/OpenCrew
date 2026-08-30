@@ -46,5 +46,5 @@ test('local game autosaves and can be continued from main menu',async({page})=>{
   await expect(resume).toContainText('CONTINUE LAST GAME');
   await resume.click();
   await expect(page.locator('.game')).toBeVisible();
-  await expect(page.locator('.mission-rail')).toContainText('Emberline').or;
+  await expect(page.locator('.hud')).toContainText('Emberline');
 });
