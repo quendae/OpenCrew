@@ -10,7 +10,7 @@
 @media(max-width:600px){
   .hand:has(.card:nth-child(9)) .card{margin-left:-29px}
   .hand:has(.card:nth-child(11)) .card{margin-left:-37px}
-  .hand:has(.card:nth-child(13)) .card{margin-left:-43px}
+  .hand:has(.card:nth-child(13)) .card{margin-left:-45px}
   .hand .card:first-child{margin-left:0}
   .relay-cards:has(.card:nth-child(9)) .card{margin-left:-31px}
   .relay-cards:has(.card:nth-child(11)) .card{margin-left:-35px}
