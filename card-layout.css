@@ -1,0 +1,23 @@
+/* Responsive card fan tuning for long hands (notably two-slot + Relay Drone). */
+@media(max-width:820px){
+  .hand:has(.card:nth-child(10)) .card{margin-left:-24px}
+  .hand:has(.card:nth-child(12)) .card{margin-left:-32px}
+  .hand .card:first-child{margin-left:0}
+  .relay-cards:has(.card:nth-child(10)) .card{margin-left:-31px}
+  .relay-cards:has(.card:nth-child(12)) .card{margin-left:-36px}
+  .relay-cards .card:first-child{margin-left:0}
+}
+@media(max-width:600px){
+  .hand:has(.card:nth-child(9)) .card{margin-left:-29px}
+  .hand:has(.card:nth-child(11)) .card{margin-left:-37px}
+  .hand:has(.card:nth-child(13)) .card{margin-left:-43px}
+  .hand .card:first-child{margin-left:0}
+  .relay-cards:has(.card:nth-child(9)) .card{margin-left:-31px}
+  .relay-cards:has(.card:nth-child(11)) .card{margin-left:-35px}
+  .relay-cards .card:first-child{margin-left:0}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .hand:has(.card:nth-child(10)) .card{margin-left:-27px}
+  .hand:has(.card:nth-child(12)) .card{margin-left:-34px}
+  .hand .card:first-child{margin-left:0}
+}
