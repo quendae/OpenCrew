@@ -76,10 +76,10 @@ function decorateCard(card) {
 
   if(card.classList.contains('back-card')) {
     card.replaceChildren();
-    const core=document.createElement('span');core.className='card-back-core';
+    const core=document.createElement('div');core.className='card-back-core';
     core.append(emblem('blue','back-emblem'));
-    const word=document.createElement('span');word.className='card-back-word';word.textContent='OPENCREW';
-    const sub=document.createElement('span');sub.className='card-back-sub';sub.textContent='COOPERATE · SIGNAL · COMPLETE';
+    const word=document.createElement('div');word.className='card-back-word';word.textContent='OPENCREW';
+    const sub=document.createElement('div');sub.className='card-back-sub';sub.textContent='COOPERATE · SIGNAL · COMPLETE';
     core.append(word,sub);card.append(core);return;
   }
 
@@ -87,9 +87,9 @@ function decorateCard(card) {
   card.dataset.value=value;
   const meta=SUITS[suit];
   card.replaceChildren();
-  const art=document.createElement('span');art.className='card-art';
+  const art=document.createElement('div');art.className='card-art';
   art.append(emblem(suit,'hero-emblem'));
-  const label=document.createElement('span');label.className='card-label';label.textContent=meta.label;
+  const label=document.createElement('div');label.className='card-label';label.textContent=meta.label;
   art.append(label);
   card.append(cardCorner(value,suit,'top'),art,cardCorner(value,suit,'bottom'));
   card.setAttribute('aria-label',suit==='rocket'?`Rocket trump ${value}`:`${meta.label} ${value}`);
