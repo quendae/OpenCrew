@@ -1,0 +1,59 @@
+from pathlib import Path
+
+p=Path('index.html')
+s=p.read_text(encoding='utf-8')
+
+css='''.trick-card.just-played{animation:card-arrive-rival .38s cubic-bezier(.2,.85,.22,1.18) both}.trick-card.just-played.from-local{animation-name:card-arrive-local}.trick-settle{--fx-x:0px;--fx-y:-220px;position:absolute;left:50%;top:45%;transform:translate(-50%,-50%) scale(1);z-index:9;display:grid;justify-items:center;gap:13px;pointer-events:none;transition:transform .58s cubic-bezier(.32,.72,.18,1),opacity .58s ease;filter:drop-shadow(0 22px 32px #0009)}.trick-settle:before{content:"";position:absolute;left:50%;top:42%;width:330px;height:190px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--winner) 24%,transparent),transparent 68%);animation:trick-glow .8s ease-out both;z-index:-1}.trick-settle-cards{display:flex;gap:15px;align-items:flex-end}.trick-settle .settle-card{opacity:0;transform:translateY(18px) scale(.86);animation:settle-pop .38s cubic-bezier(.18,.88,.24,1.2) forwards;animation-delay:calc(var(--i) * 55ms)}.trick-winner-banner{--owner:#fff;min-width:220px;padding:9px 16px;border:1px solid color-mix(in srgb,var(--owner) 62%,#ffffff33);border-top:3px solid var(--owner);border-radius:12px;background:#03121bea;box-shadow:0 12px 30px #0008;text-align:center;display:grid;gap:2px;animation:winner-banner-in .42s .16s cubic-bezier(.18,.88,.24,1.1) both}.trick-winner-banner strong{color:#f5fbff;font-size:.86rem}.trick-winner-banner span{color:var(--owner);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase}.trick-settle.collecting{transform:translate(calc(-50% + var(--fx-x)),calc(-50% + var(--fx-y))) scale(.34);opacity:0}.trick-settle.collecting .trick-winner-banner{opacity:0;transition:opacity .18s}.seat.trick-winner-seat{animation:winner-seat-pulse .8s ease-out}.hand.trick-winner-hand{animation:winner-hand-pulse .8s ease-out}@keyframes card-arrive-local{from{opacity:.2;transform:translateY(92px) scale(.78) rotate(4deg)}65%{opacity:1;transform:translateY(-7px) scale(1.05) rotate(-1deg)}to{transform:none}}@keyframes card-arrive-rival{from{opacity:.2;transform:translateY(-72px) scale(.78) rotate(-4deg)}65%{opacity:1;transform:translateY(6px) scale(1.05) rotate(1deg)}to{transform:none}}@keyframes settle-pop{to{opacity:1;transform:none}}@keyframes trick-glow{from{opacity:0;transform:translate(-50%,-50%) scale(.65)}55%{opacity:1}to{opacity:.35;transform:translate(-50%,-50%) scale(1.08)}}@keyframes winner-banner-in{from{opacity:0;transform:translateY(-8px) scale(.92)}to{opacity:1;transform:none}}@keyframes winner-seat-pulse{0%,100%{box-shadow:0 8px 22px #0005}35%{box-shadow:0 0 0 3px color-mix(in srgb,var(--owner) 72%,white),0 0 32px color-mix(in srgb,var(--owner) 54%,transparent)}}@keyframes winner-hand-pulse{35%{filter:drop-shadow(0 0 20px var(--p0))}}@media(max-width:600px){.trick-settle{top:44%;gap:8px}.trick-settle-cards{gap:5px}.trick-settle:before{width:240px;height:145px}.trick-winner-banner{min-width:180px;padding:7px 12px}.trick-winner-banner strong{font-size:.72rem}.trick-settle .card.compact{width:54px;height:78px}}'''
+marker='@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}'
+if css not in s:
+    if marker not in s: raise SystemExit('reduced-motion marker not found')
+    s=s.replace(marker,css+'@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.trick-settle{transition:none!important}}',1)
+
+if ',recordedWin=null,trickFx=null' not in s:
+    old=',recordedWin=null;function cap'
+    if old not in s: raise SystemExit('global state target not found')
+    s=s.replace(old,',recordedWin=null,trickFx=null,fxTimer=null,playFx=null;function cap',1)
+
+helpers='''function seatFxVector(seat){const table=document.querySelector('.table'),me=localSeat();if(!table)return{x:0,y:seat===me?280:-220};const w=table.clientWidth,h=table.clientHeight;if(seat===me)return{x:0,y:h*.42};const rivals=[];for(let s=0;s<game.playerCount;s++)if(s!==me)rivals.push(s);const xs=rivalXs(rivals.length),i=rivals.indexOf(seat),pct=xs[i]??50;return{x:(pct/100-.5)*w,y:-h*.34}}function buildCompletedTrick(before,seat,card){return[...(before||[]).map(x=>({seat:x.seat,card:{...x.card}})),{seat,card:{...card}}]}function startTrickFx(cards,winner,trickNo){clearTimeout(fxTimer);trickFx={cards:structuredClone(cards),winner,trickNo,vector:seatFxVector(winner)};renderGame();fxTimer=setTimeout(()=>{const node=document.querySelector('.trick-settle');node?.classList.add('collecting');document.querySelector(`.seat[data-seat="${winner}"]`)?.classList.add('trick-winner-seat');if(winner===localSeat())document.querySelector('.hand')?.classList.add('trick-winner-hand');fxTimer=setTimeout(()=>{trickFx=null;renderGame();setTimeout(runBots,140)},620)},820)}function maybeRemoteTrickFx(prev,next){const prevCount=prev?.history?.filter(x=>x.type==='trick').length||0,events=next?.history?.filter(x=>x.type==='trick')||[];if(events.length<=prevCount)return false;const t=events[events.length-1],idx=next.history.lastIndexOf(t),plays=next.history.slice(0,idx).filter(x=>x.type==='play').slice(-next.playerCount);if(plays.length!==next.playerCount)return false;startTrickFx(plays.map(x=>({seat:x.seat,card:cardFromId(x.cardId)})),t.winner,t.trickNo);return true}function trickSettleNode(fx){return el('div',{class:'trick-settle',styleObj:{'--fx-x':`${fx.vector?.x||0}px`,'--fx-y':`${fx.vector?.y||0}px`,'--winner':colorForSeat(fx.winner)}},[el('div',{class:'trick-settle-cards'},fx.cards.map((x,i)=>el('div',{class:'trick-card settle-card',styleObj:{'--owner':colorForSeat(x.seat),'--i':String(i)}},[cardNode(x.card,false,'compact'),el('small',{},seatName(x.seat))]))),el('div',{class:'trick-winner-banner',styleObj:{'--owner':colorForSeat(fx.winner)}},[el('strong',{},`${seatName(fx.winner)} wins trick ${fx.trickNo}`),el('span',{},'Trick secured')])])}'''
+if 'function seatFxVector(' not in s:
+    target='function progressFor(id){'
+    if target not in s: raise SystemExit('helper target not found')
+    s=s.replace(target,helpers+target,1)
+
+a=s.index('function execute(seat,action,payload={}){')
+b=s.index('function campaignScreen(){',a)
+execute='''function execute(seat,action,payload={}){if(!game||trickFx)return false;let r={ok:false},beforeTrick=null,playedCard=null,playedTrickNo=game.trickNo;if(action==='play-card'){beforeTrick=structuredClone(game.trick);playedCard=game.hands[seat]?.find(c=>c.id===payload.cardId)||null}if(action==='play-card')r=playCard(game,seat,payload.cardId);if(action==='assign-task')r=assignTask(game,seat,payload.taskId);if(action==='communicate')r=communicate(game,seat,payload.cardId,payload.position);if(!r.ok)return false;if(action==='play-card')playFx={seat,cardId:payload.cardId};recordProgress();saveLocalGame();if(multiplayer?.role==='host')multiplayer.sync();if(action==='play-card'&&Number.isInteger(r.winner)&&playedCard){startTrickFx(buildCompletedTrick(beforeTrick,seat,playedCard),r.winner,playedTrickNo);return true}renderGame();setTimeout(runBots,action==='play-card'?360:240);return true}'''
+s=s[:a]+execute+s[b:]
+
+if "function campaignScreen(){clearTimeout(fxTimer)" not in s:
+    s=s.replace("function campaignScreen(){app.innerHTML=''","function campaignScreen(){clearTimeout(fxTimer);trickFx=null;playFx=null;app.innerHTML=''",1)
+
+old_remote="onState:s=>{game=s;campaign=s.mode;missionNo=s.mission?.number||missionNo;playMode=s.playMode||'campaign';recordProgress();renderGame()}"
+new_remote="onState:s=>{const prev=game;game=s;campaign=s.mode;missionNo=s.mission?.number||missionNo;playMode=s.playMode||'campaign';recordProgress();if(!maybeRemoteTrickFx(prev,s))renderGame()}"
+if old_remote in s:s=s.replace(old_remote,new_remote,1)
+
+a=s.index('function runBots(){')
+b=s.index('function taskVisual(t){',a)
+runbots='''function runBots(){if(!game||game.status!=='playing'||multiplayer?.role==='guest'||trickFx)return;const seat=game.currentPlayer;if(!bots.has(seat))return;const d=seat===game.relaySeat?'expert':(multiplayer?.botSeats?.[seat]||'hard');if(game.phase==='assigning'){const t=chooseBotTask(game,seat);if(!t)return;assignTask(game,seat,t.id);saveLocalGame();renderGame();if(multiplayer?.role==='host')multiplayer.sync();setTimeout(runBots,220);return}if(game.phase==='playing'&&!game.trick.length){const sig=chooseBotCommunication(game,seat,d);if(sig){communicate(game,seat,sig.card.id,sig.position);saveLocalGame();renderGame();if(multiplayer?.role==='host')multiplayer.sync();setTimeout(runBots,160);return}}const card=chooseBotCard(game,seat,d);if(card){const beforeTrick=structuredClone(game.trick),playedTrickNo=game.trickNo,r=playCard(game,seat,card.id);if(!r.ok)return;playFx={seat,cardId:card.id};recordProgress();saveLocalGame();if(multiplayer?.role==='host')multiplayer.sync();if(Number.isInteger(r.winner)){startTrickFx(buildCompletedTrick(beforeTrick,seat,card),r.winner,playedTrickNo);return}renderGame();setTimeout(runBots,360)}}'''
+s=s[:a]+runbots+s[b:]
+
+old="const trick=game.trick.map(x=>el('div',{class:'trick-card',styleObj:{'--owner':colorForSeat(x.seat)}},[cardNode(x.card,false,'compact'),el('small',{},seatName(x.seat))])),tasks="
+new="const trick=game.trick.map(x=>el('div',{class:`trick-card ${playFx?.cardId===x.card.id&&playFx?.seat===x.seat?'just-played':''} ${x.seat===me?'from-local':'from-rival'}`,styleObj:{'--owner':colorForSeat(x.seat)}},[cardNode(x.card,false,'compact'),el('small',{},seatName(x.seat))])),tasks="
+if old in s:s=s.replace(old,new,1)
+
+old_seat="class:`seat ${s===game.relaySeat?'relay-seat':''}`,styleObj"
+new_seat="class:`seat ${s===game.relaySeat?'relay-seat':''}`,'data-seat':String(s),styleObj"
+if old_seat in s:s=s.replace(old_seat,new_seat,1)
+
+old_table="el('div',{class:'trick'},trick),el('div',{class:`status"
+new_table="el('div',{class:'trick'},trick),trickFx?trickSettleNode(trickFx):null,el('div',{class:`status"
+if old_table in s:s=s.replace(old_table,new_table,1)
+
+p.write_text(s,encoding='utf-8')
+
+Path('tests/e2e/game-feel.spec.mjs').write_text(r'''import { test, expect } from '@playwright/test';
+async function finishBriefing(page){for(let i=0;i<14;i++){const choice=page.locator('.task.pickable').first();if(await choice.count()){await choice.click();await page.waitForTimeout(100);continue;}const status=(await page.locator('.status').textContent())||'';if(!status.includes('choosing objective'))break;await page.waitForTimeout(150);}}
+async function launch(page){await page.goto('/');await page.locator('.campaign-card.orbital').click();await page.getByRole('button',{name:/Launch campaign operation|Start with bots/}).click();await finishBriefing(page);}
+test('completed trick gets winner reveal and collection animation',async({page})=>{await page.setViewportSize({width:1440,height:900});await launch(page);const playable=page.locator('.hand .card.playable').first();await expect(playable).toBeVisible({timeout:6000});await playable.click();const settle=page.locator('.trick-settle');await expect(settle).toBeVisible({timeout:5000});await expect(page.locator('.trick-winner-banner')).toContainText(/wins trick \d+/);await expect(settle).toHaveClass(/collecting/,{timeout:2500});await expect(settle).toHaveCount(0,{timeout:2500});});
+test('game feel animation does not create mobile page overflow',async({page})=>{await page.setViewportSize({width:390,height:844});await launch(page);const playable=page.locator('.hand .card.playable').first();await expect(playable).toBeVisible({timeout:6000});await playable.click();await expect(page.locator('.trick-settle')).toBeVisible({timeout:5000});const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);expect(overflow).toBeLessThanOrEqual(1);});
+''',encoding='utf-8')
