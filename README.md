@@ -16,12 +16,13 @@ All campaigns share one rules engine: four colored suits numbered 1–9, four tr
 - bots with easy/normal/hard/expert heuristics;
 - responsive desktop/tablet/phone/phone-landscape UI;
 - generated missions and campaign selection;
-- host-authoritative WebRTC multiplayer module;
-- signaling-worker scaffold;
+- host-authoritative WebRTC multiplayer lobby and remote action routing;
+- Cloudflare Worker + Durable Object signaling;
 - per-seat hidden-information filtering;
-- deterministic game seeds and Node regression tests.
+- deterministic game seeds and Node regression tests;
+- GitHub Actions build/test regression.
 
-The multiplayer transport is intentionally isolated from the game rules. Guests send actions; the host validates and executes them and sends seat-filtered state snapshots. This matches the architecture in the supplied multiplayer guide.
+The multiplayer transport is intentionally isolated from the game rules. Guests send actions; the host validates and executes them and sends seat-filtered state snapshots.
 
 ## Development
 
@@ -32,17 +33,21 @@ npm test
 npm run build
 ```
 
-## Multiplayer
+## Multiplayer signaling
 
-The browser client reads the signaling origin from:
+Deploy the signaling Worker:
+
+```bash
+npx wrangler deploy
+```
+
+Then point the browser client at it from the multiplayer screen, or persist the URL with:
 
 ```js
 localStorage.setItem('opencrew.signal', 'https://your-worker.example.workers.dev')
 ```
 
-`src/multiplayer.js` owns session/WebRTC state. `src/game.js` owns authoritative rules. Hidden cards are removed by `stateForSeat()` before guest synchronization.
-
-> The worker in `worker/signaling.js` is a development scaffold. Before public deployment, replace its process-local room map with Cloudflare Durable Objects or another persistent ephemeral signaling store.
+`src/multiplayer.js` owns session/WebRTC state. `src/game.js` owns authoritative rules. Hidden cards are removed by `stateForSeat()` before guest synchronization. `worker/signaling.js` stores short-lived SDP/ICE messages in a per-room Durable Object; no game rules run on the backend.
 
 ## Design direction
 
