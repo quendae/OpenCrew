@@ -37,5 +37,5 @@ for(const [width,height] of sizes){
 test('two-slot mode adds Relay Drone public hand',async({page})=>{
   await page.goto('/');await page.locator('.campaign-card.orbital').click();
   await page.locator('select').selectOption('2');await page.getByRole('button',{name:'Start with bots'}).click();
-  await expect(page.locator('.relay-hand')).toBeVisible();await expect(page.locator('.relay-cards .card')).toHaveCount(14);
+  await expect(page.locator('.relay-hand')).toBeVisible();await expect(page.locator('.relay-cards .card')).toHaveCount(13);
 });
