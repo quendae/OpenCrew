@@ -1,0 +1,12 @@
+name = "opencrew-signal"
+main = "worker/signaling.js"
+compatibility_date = "2026-08-30"
+
+[durable_objects]
+bindings = [
+  { name = "ROOMS", class_name = "Room" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Room"]
