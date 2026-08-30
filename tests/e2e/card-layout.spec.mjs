@@ -5,7 +5,7 @@ test('long two-slot hand stays inside mobile table',async({page})=>{
   await page.goto('/');
   await page.locator('.campaign-card.orbital').click();
   await page.locator('select').selectOption('2');
-  await page.getByRole('button',{name:'Start with bots'}).click();
+  await page.getByRole('button',{name:'Launch campaign operation'}).click();
   const cards=page.locator('.hand .card');
   await expect(cards.first()).toBeVisible();
   expect(await cards.count()).toBeGreaterThanOrEqual(13);
