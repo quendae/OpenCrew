@@ -1,0 +1,65 @@
+/* OpenCrew card system — layered after the core application stylesheet. */
+.card{
+  --card-accent:#357fd3;--card-soft:#dce9f7;--card-ink:#1b2730;
+  position:relative;width:84px;height:122px;margin-left:-13px;padding:0;
+  overflow:hidden;display:block;border-radius:12px;border:1px solid #d2d0c7;
+  color:var(--card-accent);background:
+    linear-gradient(135deg,rgba(255,255,255,.78),rgba(255,255,255,.08) 40%,transparent 40%),
+    repeating-linear-gradient(0deg,rgba(25,45,56,.018) 0 1px,transparent 1px 5px),
+    linear-gradient(150deg,#fffdf7,#f2f0e8 62%,#e8e7df);
+  box-shadow:0 1px 0 #fff inset,0 0 0 1px #ffffff66 inset,0 14px 24px #0008;
+  isolation:isolate;
+}
+.card:before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb,var(--card-accent) 19%,#c9c6ba);border-radius:9px;pointer-events:none;z-index:0}
+.card:after{content:"";position:absolute;inset:12% 10%;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 10px,color-mix(in srgb,var(--card-accent) 10%,transparent) 11px 12px,transparent 13px 20px);opacity:.9;pointer-events:none;z-index:0}
+.card.blue{--card-accent:#2e7fc9;--card-soft:#dcecff}.card.yellow{--card-accent:#cc970f;--card-soft:#f5e8ba}.card.green{--card-accent:#34844f;--card-soft:#dceadf}.card.pink{--card-accent:#c34772;--card-soft:#f4dde6}
+.card>*{position:relative;z-index:1}
+.card-corner{position:absolute;display:grid;grid-template-columns:auto 14px;align-items:center;gap:2px;line-height:1;letter-spacing:-.04em}
+.card-corner strong{font:800 1.38rem/1 Inter,ui-sans-serif,system-ui,sans-serif;text-shadow:0 1px #fff}
+.card-corner-top{top:9px;left:9px}.card-corner-bottom{right:9px;bottom:9px;transform:rotate(180deg)}
+.suit-emblem{display:inline-grid;place-items:center}.suit-emblem svg{width:100%;height:100%;overflow:visible}.corner-emblem{width:14px;height:14px}
+.icon-ring{fill:none;stroke:currentColor;stroke-width:1.4;opacity:.48}.icon-main{fill:currentColor}.icon-detail{fill:none;stroke:currentColor;stroke-width:1;opacity:.55}.icon-dot{fill:currentColor;opacity:.8}.icon-stroke{fill:none!important;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.icon-cut{fill:#f7f4ec}
+.card-art{position:absolute!important;inset:30px 9px 25px;display:grid;place-items:center;align-content:center;gap:6px}
+.card-art:before,.card-art:after{content:"";position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);border:1px solid color-mix(in srgb,var(--card-accent) 22%,transparent);border-radius:50%}
+.card-art:before{width:48px;height:48px}.card-art:after{width:60px;height:60px;border-style:dashed;opacity:.7}
+.hero-emblem{width:42px;height:42px;filter:drop-shadow(0 1px 0 #fff)}
+.card-label{font:700 .43rem/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.14em;color:color-mix(in srgb,var(--card-accent) 78%,#273139);white-space:nowrap}
+.card.playable{cursor:pointer}
+.card.playable:hover{transform:translateY(-17px) rotate(-.8deg);border-color:color-mix(in srgb,var(--card-accent) 58%,white);box-shadow:0 0 0 2px color-mix(in srgb,var(--card-accent) 82%,white),0 22px 32px #0009}
+.card.playable:active{transform:translateY(-11px) scale(.985)}
+
+/* Trump cards use a colder, engraved-metal visual language. */
+.card.rocket{--card-accent:#252d32;color:#252d32;border-color:#a7aaa7;background:
+  linear-gradient(100deg,transparent 0 42%,rgba(255,255,255,.48) 48%,transparent 54%),
+  repeating-linear-gradient(115deg,rgba(30,34,36,.045) 0 1px,transparent 1px 7px),
+  linear-gradient(145deg,#f0eee6,#d3d3cb 48%,#f4f2e9 100%)}
+.card.rocket:before{border-color:#8d9290;box-shadow:0 0 0 2px #ffffff55 inset}.card.rocket:after{background:repeating-radial-gradient(circle,transparent 0 10px,#3338 11px 11.8px,transparent 12.4px 20px);opacity:.16}
+.card.rocket .card-label{font-size:.4rem;color:#31383b}.card.rocket .hero-emblem{width:46px;height:46px}.card.rocket .icon-cut{fill:#e0dfd7}
+
+/* Compact trick/relay cards retain the same visual identity at reduced size. */
+.card.compact{width:62px;height:90px;padding:0;border-radius:9px}.card.compact:before{inset:4px;border-radius:7px}.card.compact .card-corner{grid-template-columns:auto 10px}.card.compact .card-corner strong{font-size:1rem}.card.compact .corner-emblem{width:10px;height:10px}.card.compact .card-corner-top{top:7px;left:7px}.card.compact .card-corner-bottom{right:7px;bottom:7px}.card.compact .card-art{inset:22px 7px 18px;gap:3px}.card.compact .hero-emblem{width:30px;height:30px}.card.compact .card-art:before{width:34px;height:34px}.card.compact .card-art:after{width:42px;height:42px}.card.compact .card-label{font-size:.31rem;letter-spacing:.1em}
+
+/* Symmetric expedition card back. */
+.card.back-card{color:#b6e5ff;border-color:#36506a;background:
+  radial-gradient(circle at 50% 50%,#1b4966 0 2px,transparent 3px),
+  repeating-radial-gradient(circle at 50% 48%,transparent 0 10px,#80d9ff2b 11px 11.7px,transparent 12.5px 18px),
+  linear-gradient(90deg,transparent 48%,#d9f4ff22 49%,#d9f4ff22 51%,transparent 52%),
+  linear-gradient(#0a1d30,#0e2a45 52%,#071526);box-shadow:0 0 0 2px #06101a inset,0 0 0 4px #b3d9e622 inset,0 14px 24px #0008}
+.card.back-card:before{inset:6px;border-color:#7fbada55}.card.back-card:after{inset:18%;border-radius:0;transform:rotate(45deg);background:none;border:1px solid #9bdcff44}
+.card-back-core{position:absolute!important;inset:14px 7px;display:grid;place-items:center;align-content:center;gap:5px;text-align:center}.back-emblem{width:36px;height:36px;color:#bfeaff}.card-back-word{font:700 .52rem/1 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.18em;color:#f2fbff}.card-back-sub{font:600 .22rem/1.4 Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:.08em;color:#83b1c9}.card.back-card.compact .card-back-core{inset:10px 5px;gap:3px}.card.back-card.compact .back-emblem{width:27px;height:27px}.card.back-card.compact .card-back-word{font-size:.38rem}.card.back-card.compact .card-back-sub{display:none}
+
+/* Mission objectives now read like dark task cards from the same physical system. */
+.task.objective-card{--objective-accent:var(--accent);position:relative;overflow:hidden;padding:12px 11px 11px 13px;border-radius:10px;background:linear-gradient(145deg,#0d2632,#071821);border-color:color-mix(in srgb,var(--objective-accent) 28%,var(--line));box-shadow:0 5px 12px #0003,inset 0 0 24px color-mix(in srgb,var(--objective-accent) 4%,transparent)}
+.task.objective-card:before{content:"MISSION OBJECTIVE";position:absolute;top:0;right:8px;font-size:.43rem;letter-spacing:.14em;color:color-mix(in srgb,var(--objective-accent) 72%,#bcd2dc);opacity:.9}.task.objective-card:after{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--objective-accent);opacity:.8}.task.objective-blue{--objective-accent:#3b90dd}.task.objective-yellow{--objective-accent:#d4a62d}.task.objective-green{--objective-accent:#48a56b}.task.objective-pink{--objective-accent:#d05b83}.task.objective-rocket{--objective-accent:#c1c8c9}.task.objective-card p{padding-top:2px;font-weight:650}.task.objective-card small{color:color-mix(in srgb,var(--objective-accent) 45%,#9eb7c2)}
+.task.objective-card.pickable:hover{border-color:var(--objective-accent);background:linear-gradient(145deg,color-mix(in srgb,var(--objective-accent) 13%,#0d2632),#071821)}
+
+/* Signal choices become compact instrument-like markers rather than generic pills. */
+.signal-options{align-items:stretch}.signal-chip{--signal-accent:#70b8ff;min-width:58px;min-height:67px;display:grid;grid-template-rows:auto 1fr;justify-items:center;gap:3px;padding:6px!important;border-radius:9px!important;background:linear-gradient(#0c2633,#06131c)!important;border:1px solid color-mix(in srgb,var(--signal-accent) 52%,#354954)!important;box-shadow:inset 0 0 15px color-mix(in srgb,var(--signal-accent) 5%,transparent);color:#e7f4f9!important}.signal-chip.blue{--signal-accent:#70b8ff}.signal-chip.yellow{--signal-accent:#f1c75a}.signal-chip.green{--signal-accent:#60dfa7}.signal-chip.pink{--signal-accent:#ef86b7}.signal-kind{font-size:.52rem;font-weight:800;letter-spacing:.12em;color:var(--signal-accent)}.signal-center{width:39px;height:39px;border:1px solid color-mix(in srgb,var(--signal-accent) 48%,transparent);border-radius:50%;display:grid;place-items:center;position:relative;color:var(--signal-accent)}.signal-center:before{content:"";position:absolute;inset:4px;border:1px dashed color-mix(in srgb,var(--signal-accent) 36%,transparent);border-radius:50%}.signal-emblem{width:23px;height:23px}.signal-center strong{position:absolute;right:-4px;bottom:-4px;min-width:17px;height:17px;display:grid;place-items:center;border-radius:50%;background:#071923;border:1px solid var(--signal-accent);font-size:.56rem;color:#fff}.signal-chip:hover{transform:translateY(-2px);filter:brightness(1.13)}
+
+@media(max-width:600px){
+  .card{width:66px;height:96px;margin-left:-18px;border-radius:9px}.card:before{inset:4px;border-radius:7px}.card-corner{grid-template-columns:auto 10px}.card-corner strong{font-size:1.03rem}.corner-emblem{width:10px;height:10px}.card-corner-top{top:7px;left:7px}.card-corner-bottom{right:7px;bottom:7px}.card-art{inset:23px 7px 20px;gap:3px}.hero-emblem{width:31px;height:31px}.card-art:before{width:35px;height:35px}.card-art:after{width:43px;height:43px}.card-label{font-size:.3rem;letter-spacing:.09em}.card.compact{width:51px;height:74px}.card.compact .card-label{display:none}.card.compact .hero-emblem{width:24px;height:24px}.card.compact .card-art:before{width:28px;height:28px}.card.compact .card-art:after{width:34px;height:34px}
+}
+
+@media(max-height:500px) and (orientation:landscape){
+  .card{width:58px;height:84px;margin-left:-16px}.card-label{display:none}.hero-emblem{width:27px;height:27px}.card-art:before{width:31px;height:31px}.card-art:after{width:38px;height:38px}.card.compact{width:48px;height:69px}
+}
