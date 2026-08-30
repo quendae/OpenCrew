@@ -29,13 +29,13 @@ for(const [width,height] of sizes){
   test(`layout ${width}x${height}`,async({page})=>{
     await page.setViewportSize({width,height});await page.goto('/');await noOverflow(page);
     await page.locator('.campaign-card.ember').click();await noOverflow(page);
-    await page.getByRole('button',{name:'Start with bots'}).click();
+    await page.getByRole('button',{name:'Launch campaign operation'}).click();
     await expect(page.locator('.game')).toBeVisible();await finishBriefing(page);await noOverflow(page);
   });
 }
 
 test('two-slot mode adds Relay Drone public hand',async({page})=>{
   await page.goto('/');await page.locator('.campaign-card.orbital').click();
-  await page.locator('select').selectOption('2');await page.getByRole('button',{name:'Start with bots'}).click();
+  await page.locator('select').selectOption('2');await page.getByRole('button',{name:'Launch campaign operation'}).click();
   await expect(page.locator('.relay-hand')).toBeVisible();await expect(page.locator('.relay-cards .card')).toHaveCount(13);
 });
